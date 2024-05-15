@@ -7,20 +7,26 @@
 <body>
     <center><h1>Game</h1></center>
 
-    <!-- <div class="table" style="align-items: center;">
-        <img src="images/table.png" alt="img-table">
-    </div> -->
-
-
     <div style="display: flex; justify-content: center; align-items: center;">
         <div>
             <p>Player 1 (you)</p>
+            <input type="button" value="Check" name="check_btn1" id="check_btn1"> <!-- Attendre --> <!-- Cacher après pre-flop --> 
+            <input type="button" value="Bet" name="bet_btn1" id="bet_btn1"> <!-- Miser -->
+            <input type="text" name="bet-value1" id="bet-value1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+            <input type="button" value="Fold" name="fold_btn1" id="fold_btn1"> <!-- Passer -->
         </div>
         <div> <img src="images/table.png" alt="bob"> </div>
         <div>
             <p>Player 2 (bot)</p>
+            <input type="button" value="Check" name="check_btn2" id="check_btn2"> <!-- Attendre --> <!-- Cacher après  pre-flop --> 
+            <input type="button" value="Call" name="call_btn2" id="call_btn2"> <!-- Suivre -->
+            <input type="text" name="bet-value2" id="bet-value2" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
+            <input type="button" value="Fold" name="fold_btn2" id="fold_btn2"> <!-- Passer -->
         </div>
     </div>
-
+    <div style="display: flex; justify-content: center; align-items: center; padding-left: 40%; padding-right: 40%; padding-top: 5%">
+        <input type="button" value="New game" name="newgame_btn" id="newgame_btn"> 
+    </div>
+    
 </body>
 </html>

@@ -4,4 +4,4 @@ import { reception, game } from "./controller" ;
 export const usersRouter = Router();
 
 usersRouter.get("/", reception);
-usersRouter.get("/game", game);
+// usersRouter.get("/game", game);
