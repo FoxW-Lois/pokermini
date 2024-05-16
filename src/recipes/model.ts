@@ -7,7 +7,6 @@ export type card = {
 export type user = {
     id: string,
     jetons: number,
-    cardName: string,
-    cardValue: number,
+    cardHand : card[],
     currentTurn: boolean
 }

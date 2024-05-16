@@ -1,6 +1,6 @@
 import express from 'express';
-import { card, stack } from './recipes/model';
-import { userList, cardList } from './users/controller';
+import { card } from './recipes/model';
+import { userList, cardList, nextplayer } from './users/controller';
 
 export function createApp() {
 	const app = express();
@@ -27,8 +27,8 @@ export function createApp() {
 
 		game = {
 			balances: {
-				human: 100,
-				bot: 100,
+				human: userList[0].jetons,
+				bot: userList[1].jetons,
 			},
 			hand: {
 				stage: "ante",
@@ -67,25 +67,48 @@ export function createApp() {
 
 	app.post("/play", (req, res) => {
 		console.log("test");
-		console.log(game);
+		console.log(req.body.action);
 		
 		if (!game || game.hand.currentPlayer !== "player1") {
 			res.redirect("/");
 			return;
 		}
-		if (req.body.action === "bet") {
-			const amount = parseInt(req.body.bet || "1");
-			game.hand.bets.human += amount;
-			game.balances.human -= amount;
-			game.hand.currentPlayer = "bot";
-			setTimeout(() => {
-				game.lastAction = "bet";
-				game.lastAmount = 1;
-				game.balances.bot -= 1;
-				game.hand.bets.bot += 1;
-				game.hand.currentPlayer = "player1";
-			}, 5000);
+
+		switch (req.body.action){
+			case "Check" : 
+				console.log("A");
+				game.hand.currentPlayer = nextplayer(game.hand.currentPlayer);
+			break;
+
+			case "Fold" : 
+				console.log("B");
+				
+			break;
+
+			case "Bet" : 
+				console.log("C"); 
+			break;
+
+			case "Raise" : 
+				console.log("D"); 
+			break;
 		}
+
+
+		// if (req.body.action === "bet") {
+		// 	const amount = parseInt(req.body.bet || "1");
+		// 	game.hand.bets.human += amount;
+		// 	game.balances.human -= amount;
+		// 	game.hand.currentPlayer = "bot";
+		// 	setTimeout(() => {
+		// 		game.lastAction = "bet";
+		// 		game.lastAmount = 1;
+		// 		game.balances.bot -= 1;
+		// 		game.hand.bets.bot += 1;
+		// 		game.hand.currentPlayer = "player1";
+		// 	}, 5000);
+		// }
+		
 		res.redirect("/");
 	});
 

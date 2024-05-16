@@ -9,64 +9,7 @@
 
 		<center><h1>PokerMini</h1></center>
 
-		<% if (!game) { %>
-			<div style="display: flex; justify-content: center; align-items: center;">
-				<form action="/new-game" method="post">
-					<button type="submit" >New game</button>
-				</form>
-			</div>
-
-		<% } else { %> 
-
-			<% if (!!hand) { %>
-				<center><h4>Your hand</h4>
-					<!-- <div class="hand row">
-						<article class="col-xs-offset-1 col-xs-1">
-							<span class="card card1"><%=hand[0].rank%> <%=hand[0].suit%></span>
-						</article>
-						<article class="col-xs-offset-1 col-xs-1">
-							<span class="card card2"><%=hand[1].rank%> <%=hand[1].suit%></span>
-						</article>
-					</div> -->
-				</center>
-			<% } %>
-
-			<% if (game.hand.currentPlayer === "player1") { %>
-				<div style="display: flex; justify-content: center; align-items: center;">
-					<div class="actions">
-						<p>Player 1 (you)</p>
-						<form action="/play" method="post" class="row">
-							<input type="button" value="Check" name="check_btn" id="check_btn" class="col-xs-5"> <!-- Attendre --> <!-- Cacher après pre-flop --> 
-							<input type="button" value="Fold" name="fold_btn" id="fold_btn" class="col-xs-5"> <!-- Passer -->
-							
-							<input type="button" value="Bet" name="bet_btn" id="bet_btn" class="col-xs-5"> <!-- Miser -->
-							<input type="number" name="bet_value" id="bet_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-xs-5">
-						</form>
-					</div>
-					<div> <img src="images/table.png" alt="table.png"> </div>
-					<div>
-						<p>Player 2 (bot)</p>
-					</div>
-				</div>
-
-			<% } else { %>
-
-				<p>Waiting for bot...</p>
-					<script>
-						const id = setInterval(() => {
-							fetch("/game-status")
-							.then(res => res.json())
-							.then(game => {
-								if (game.hand.currentPlayer === "human") {
-									clearInterval(id)
-									location.reload()
-								}
-							})
-						}, 500)
-					</script>
-			<% } %>
-		
-		<% } %>
+			<a href="/game"><button type="submit">New game</button></a>
 			
 	</main>
 </body>

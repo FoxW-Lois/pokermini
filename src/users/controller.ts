@@ -1,12 +1,8 @@
 import { RequestHandler } from "express";
-import { card, stack, user } from '../recipes/model';
+import { card, user } from '../recipes/model';
 
 export const reception : RequestHandler = (req, res) => {
     res.render("index")
-};
-
-export const game : RequestHandler = (req, res) => {
-    res.render("game")
 };
 
 
@@ -103,22 +99,30 @@ Card = {
 cardList.push(Card);
 
 
-let index = Math.floor(Math.random() * cardList.length);
-let randomCard = cardList[index].id+cardList[index].symbol;
-let valueCard = cardList[index].value;
-cardList.splice(index, 1);
+export function giveRandomCard() {
+    let index = Math.floor(Math.random() * cardList.length);
+    let cardGived = cardList[index];
+    cardList.splice(index, 1);
 
-let index2 = Math.floor(Math.random() * cardList.length);
-randomCard = cardList[index2].id+cardList[index2].symbol;
-valueCard = cardList[index2].value;
-cardList.splice(index2, 1);
+    return cardGived;
+}
 
+let cardHand1: card[]=[];
+let RC = giveRandomCard();
+cardHand1.push(RC);
+RC = giveRandomCard();
+cardHand1.push(RC);
+
+let cardHand2: card[]=[];
+RC = giveRandomCard();
+cardHand2.push(RC);
+RC = giveRandomCard();
+cardHand2.push(RC);
 
 let player : user = {
     id: "Player",
     jetons: 100,
-    cardName: randomCard,
-    cardValue: valueCard,
+    cardHand : cardHand1,
     currentTurn: true
 };
 userList.push(player);
@@ -126,8 +130,7 @@ userList.push(player);
 player = {
     id: "Bot",
     jetons: 100,
-    cardName: randomCard,
-    cardValue: valueCard,
+    cardHand : cardHand2,
     currentTurn: false
 };
 userList.push(player);
@@ -135,7 +138,45 @@ userList.push(player);
 
 console.log(cardList);
 
-console.log(userList[0].cardName+""+userList[0].cardValue);
-console.log(userList[1].cardName+""+userList[1].cardValue);
+console.log(userList[0].cardHand[0]);
+console.log(userList[0].cardHand[1]);
+
+console.log(userList[1].cardHand[0]);
+console.log(userList[1].cardHand[1]);
 
 
+export const Game : RequestHandler = (req, res) => {
+    res.render('game', {userList, cardList})
+}
+
+export const Button : RequestHandler = (req, res) => {
+    // switch (req.body.action){
+    //     case "Check" : 
+    //         console.log("A");
+    //         game.hand.currentPlayer = nextplayer(game.hand.currentPlayer);
+    //     break;
+
+    //     case "Fold" : 
+    //         console.log("B");
+            
+    //     break;
+
+    //     case "Bet" : 
+    //         console.log("C"); 
+    //     break;
+
+    //     case "Raise" : 
+    //         console.log("D"); 
+    //     break;
+    // }
+}
+
+
+export function nextplayer(currentplayer : string){
+    if (currentplayer == "Player") {
+        currentplayer = "Bot";
+    } 
+    else {
+        currentplayer = "Player";
+    }
+}

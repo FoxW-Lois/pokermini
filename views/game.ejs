@@ -1,32 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <%- include('head'); %>
-    <title>PokerMini - Game</title>
+	<%- include('head'); %>
+	<title>PokerMini</title>
 </head>
 <body>
-    <center><h1>Game</h1></center>
+	<main class="container">
 
-    <div style="display: flex; justify-content: center; align-items: center;">
-        <div>
-            <p>Player 1 (you)</p>
-            <input type="button" value="Check" name="check_btn1" id="check_btn1"> <!-- Attendre --> <!-- Cacher après pre-flop --> 
-            <input type="button" value="Bet" name="bet_btn1" id="bet_btn1"> <!-- Miser -->
-            <input type="text" name="bet-value1" id="bet-value1" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-            <input type="button" value="Fold" name="fold_btn1" id="fold_btn1"> <!-- Passer -->
-        </div>
-        <div> <img src="images/table.png" alt="bob"> </div>
-        <div>
-            <p>Player 2 (bot)</p>
-            <input type="button" value="Check" name="check_btn2" id="check_btn2"> <!-- Attendre --> <!-- Cacher après  pre-flop --> 
-            <input type="button" value="Call" name="call_btn2" id="call_btn2"> <!-- Suivre -->
-            <input type="text" name="bet-value2" id="bet-value2" oninput="this.value = this.value.replace(/[^0-9]/g, '');">
-            <input type="button" value="Fold" name="fold_btn2" id="fold_btn2"> <!-- Passer -->
-        </div>
-    </div>
-    <div style="display: flex; justify-content: center; align-items: center; padding-left: 40%; padding-right: 40%; padding-top: 5%">
-        <input type="button" value="New game" name="newgame_btn" id="newgame_btn"> 
-    </div>
-    
+		<center><h1>PokerMini</h1></center>
+
+			<center><h4>Your hand</h4>
+				<div class="hand row">
+					<% for(const [idx, card] of userList.entries()) { %>
+						<% if (card.id === "Player") { %>
+							<article class="col-xs-offset-1 col-xs-1">
+								<span class="card card1"><%=card.cardHand[0].id%> <%=card.cardHand[0].symbol%></span>
+							</article>
+							<article class="col-xs-offset-1 col-xs-1">
+								<span class="card card1"><%=card.cardHand[1].id%> <%=card.cardHand[1].symbol%></span>
+							</article>
+						<% } %>	
+					<% } %>
+				</div>
+			</center>
+
+			
+				<div style="display: flex; justify-content: center; align-items: center;">
+					<div class="actions">
+						<p>Player 1 (you)</p>
+						<form action="/play" method="post" class="row">
+							<button type="submit" name="action" value="Check" class="col-lg-5">Check</button> <!-- Attendre --> <!-- Cacher après pre-flop --> 
+							<button type="submit" name="action" value="Fold" class="col-lg-5">Fold</button> <!-- Passer -->
+
+							<button type="submit" name="action" value="Bet" class="col-lg-3">Bet</button> <!-- Miser -->
+							<button type="submit" name="action" value="Raise" class="col-lg-3">Raise</button>
+
+							<input type="number" name="bet_value" id="bet_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-lg-3">
+						</form>
+					</div>
+					<div> <img src="images/table.png" alt="table.png"> </div>
+					<div>
+						<p>Player 2 (bot)</p>
+					</div>
+				</div>
+
+			
+
+				<p>Waiting for bot...</p>
+				
+			
+			
+	</main>
 </body>
 </html>

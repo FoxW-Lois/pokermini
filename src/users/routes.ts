@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { reception, game } from "./controller" ;
+import { reception, Game } from "./controller" ;
 
 export const usersRouter = Router();
 
 usersRouter.get("/", reception);
-// usersRouter.get("/game", game);
+usersRouter.get("/game", Game);
