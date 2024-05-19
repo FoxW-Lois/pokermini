@@ -6,7 +6,8 @@ export type card = {
 
 export type user = {
     id: string,
-    jetons: number,
+    chips: number,
     cardHand : card[],
-    currentTurn: boolean
+    currentTurn: boolean,
+    betCount: number
 }

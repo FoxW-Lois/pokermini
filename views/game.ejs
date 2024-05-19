@@ -2,54 +2,119 @@
 <html lang="en">
 <head>
 	<%- include('head'); %>
-	<title>PokerMini</title>
 </head>
 <body>
 	<main class="container">
 
-		<center><h1>PokerMini</h1></center>
+		<div style="display: flex; justify-content: center; align-items: center;">
+			<h1>PokerMini</h1>
+		</div>	
 
-			<center><h4>Your hand</h4>
-				<div class="hand row">
-					<% for(const [idx, card] of userList.entries()) { %>
-						<% if (card.id === "Player") { %>
-							<article class="col-xs-offset-1 col-xs-1">
-								<span class="card card1"><%=card.cardHand[0].id%> <%=card.cardHand[0].symbol%></span>
+		<div>
+			<p>Pot : <%= pot %></p>
+		</div>
+
+		<div style="display: flex; justify-content: space-between; text-align: center;">
+			<% for(const [index, user] of userList.entries()) { %>
+				<% if (user.id === "Player") { %>
+					<% if (gameTurn !== 2) {%>
+						<div style="display: flex; flex-direction: column;">
+							<h4>Your hand</h4>
+							<article>
+								<span><%=user.cardHand[0].id%> <%=user.cardHand[0].symbol%></span>
 							</article>
-							<article class="col-xs-offset-1 col-xs-1">
-								<span class="card card1"><%=card.cardHand[1].id%> <%=card.cardHand[1].symbol%></span>
+							<article>
+								<span><%=user.cardHand[1].id%> <%=user.cardHand[1].symbol%></span>
 							</article>
-						<% } %>	
+							<p>Chips : <%= userList[0].chips %></p>
+							<p>Bet : <%= userList[0].betCount %></p>
+						</div>
+					<% } else {%>
+						<div style="display: flex; flex-direction: column;">
+							<p>Chips : <%= userList[0].chips %></p>
+							<p>Bet : <%= userList[0].betCount %></p>
+							<h4>Your hand</h4>
+							<article>
+								<span><%=user.cardHand[0].id%> <%=user.cardHand[0].symbol%></span>
+							</article>
+							<article>
+								<span><%=user.cardHand[1].id%> <%=user.cardHand[1].symbol%></span>
+							</article>
+							<article>
+								<span><%=user.cardHand[2].id%> <%=user.cardHand[2].symbol%></span>
+							</article>
+							<p>Chips : <%= userList[0].chips %></p>
+							<p>Bet : <%= userList[0].betCount %></p>
+						</div>
 					<% } %>
+				<% } else { %>
+					<% if (gameTurn !== 2) {%>
+						<div style="display: flex; flex-direction: column;">
+							<h4>Bot hand</h4>
+							<article>
+								<span>Card</span>
+							</article>
+							<article>
+								<span>Card</span>
+							</article>
+							<p>Chips : <%= userList[1].chips %></p>
+							<p>Bet : <%= userList[1].betCount %></p>
+						</div>
+					<% } else {%>
+						<div style="display: flex; flex-direction: column;">
+							<h4>Bot hand</h4>
+							<article>
+								<span>Card</span>
+							</article>
+							<article>
+								<span>Card</span>
+							</article>
+							<article>
+								<span>Card</span>
+							</article>
+							<p>Chips : <%= userList[1].chips %></p>
+							<p>Bet : <%= userList[1].betCount %></p>
+						</div>
+					<% } %>
+				<% } %>
+			<% } %>
+		</div>
+
+		<% if (userList[0].currentTurn === false) { %>
+			<p>Waiting for bot</p>
+			<% setTimeout(botTurn, 1000) %>
+			<meta http-equiv="refresh" content="6">
+			
+		<%} else { %>
+			<div style="display: flex; justify-content: center; align-items: center;">
+				<div class="actions">
+					<form action="/game" method="post" class="row">
+						<% if (userList[0].betCount === 0 && userList[1].betCount === 0) {%>
+							<button type="submit" name="action" value="Check" class="col-lg-4">Check</button> <!-- Attendre -->
+							<button type="submit" name="action" value="Fold" class="col-lg-4" disabled>Fold</button> <!-- Passer -->
+							<button type="submit" name="action" value="Call" class="col-lg-4" disabled>Call</button> <!-- Suivre -->
+							<button type="submit" name="action" value="Bet" class="col-lg-4">Bet</button> <!-- Miser -->
+							<input type="number" name="betraise_value" id="betraise_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-lg-4">
+						
+						<%} else if (switchTurn === 2 && userList[1].betCount > userList[0].betCount && userList[0].betCount === 0) {%> 
+							<button type="submit" name="action" value="Check" class="col-lg-4" disabled>Check</button> <!-- Attendre -->
+							<button type="submit" name="action" value="Fold" class="col-lg-4">Fold</button> <!-- Passer -->
+							<button type="submit" name="action" value="Call" class="col-lg-4">Call</button> <!-- Suivre -->
+							<button type="submit" name="action" value="Raise" class="col-lg-4">Raise</button> <!-- Relancer -->
+							<input type="number" name="betraise_value" id="betraise_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-lg-4">
+						
+						<% } else {%>
+							<button type="submit" name="action" value="Check" class="col-lg-4" disabled>Check</button> <!-- Attendre -->
+							<button type="submit" name="action" value="Fold" class="col-lg-4">Fold</button> <!-- Passer -->
+							<button type="submit" name="action" value="Call" class="col-lg-4">Call</button> <!-- Suivre -->
+							<button type="submit" name="action" value="Raise" class="col-lg-4" disabled>Raise</button> <!-- Relancer -->
+							<input type="number" name="betraise_value" id="betraise_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-lg-4" disabled>
+						<% } %>
+					</form>
 				</div>
-			</center>
+			</div>
+		<% } %>
 
-			
-				<div style="display: flex; justify-content: center; align-items: center;">
-					<div class="actions">
-						<p>Player 1 (you)</p>
-						<form action="/play" method="post" class="row">
-							<button type="submit" name="action" value="Check" class="col-lg-5">Check</button> <!-- Attendre --> <!-- Cacher après pre-flop --> 
-							<button type="submit" name="action" value="Fold" class="col-lg-5">Fold</button> <!-- Passer -->
-
-							<button type="submit" name="action" value="Bet" class="col-lg-3">Bet</button> <!-- Miser -->
-							<button type="submit" name="action" value="Raise" class="col-lg-3">Raise</button>
-
-							<input type="number" name="bet_value" id="bet_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-lg-3">
-						</form>
-					</div>
-					<div> <img src="images/table.png" alt="table.png"> </div>
-					<div>
-						<p>Player 2 (bot)</p>
-					</div>
-				</div>
-
-			
-
-				<p>Waiting for bot...</p>
-				
-			
-			
 	</main>
 </body>
 </html>
