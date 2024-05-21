@@ -1,9 +1,9 @@
 Tests unitaires :
 
-hands.test.ts : Test la fonction déterminant le type de main d'un joueur (avec test pour une Carte haute et pour une Paire)
-addcards.test.ts : Test la fonction d'ajout des cartes dans la pioche (pioche => cardList & newCardList)
-giverandomcard.test.ts : Test la fonction d'aléatoire pour les cartes 
-resetvalue.test.ts : Test la fonction réinitialisant toutes les variables (exceptées celles du pot et des jetons (chips) des joueurs) pour les parties suivantes
+- hands.test.ts : Test la fonction déterminant le type de main d'un joueur (avec test pour une Carte haute et pour une Paire)
+- addcards.test.ts : Test la fonction d'ajout des cartes dans la pioche (pioche => cardList & newCardList)
+- giverandomcard.test.ts : Test la fonction d'aléatoire pour les cartes 
+- resetvalue.test.ts : Test la fonction réinitialisant toutes les variables (exceptées celles du pot et des jetons (chips) des joueurs) pour les parties suivantes
 
 
 Auto-évalutation :
