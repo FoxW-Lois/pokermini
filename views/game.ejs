@@ -62,13 +62,17 @@
 				<p>Waiting for bot</p>
 				<% setTimeout(botTurn, 5000) %>
 				<meta http-equiv="refresh" content="6">
+
+			<% } else if (turnPlayer > 3) { %>
+				<p>Voici les résultats :</p>
+				<% setTimeout(compareHand(userList[0].cardHand, userList[1].cardHand), 5000) %>
+				<meta http-equiv="refresh" content="6">
 				
 			<%} else { %>
 				<div style="display: flex; justify-content: center; align-items: center; padding-left: 20%; padding-right: 20%;">
 					<div class="actions">
 						<form action="/game" id="button-form" method="post" class="row" style="display: flex; justify-content: center;">
 							<% if (turnPlayer === 1 || (userList[0].betCount === 0 && userList[1].betCount === 0)) { %> <!-- Tour 1 ou les mises sont à 0 -->
-									<!-- Si Player est le premier à parler OU Si Bot est le premier à parler et que dit Attendre -->
 								<button type="submit" name="action" value="Check" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Check</button> <!-- Attendre -->
 								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Bet 1 Chip</button> <!-- Miser -->
 								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Bet 2 Chips</button> <!-- Miser -->
