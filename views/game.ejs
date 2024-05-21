@@ -17,7 +17,7 @@
 		<div style="display: flex; justify-content: space-between; text-align: center;">
 			<% for(const [index, user] of userList.entries()) { %>
 				<% if (user.id === "Player") { %>
-					<% if (gameTurn !== 2 || user.cardHand.length == 2) {%>
+					<% if (gameTurn == 2 || user.cardHand.length == 2) {%>
 						<div style="display: flex; flex-direction: column;">
 							<h4>Your hand</h4>
 							<article>
@@ -36,7 +36,7 @@
 							<p>Chips : <%= userList[0].chips %></p>
 							<p>Bet : <%= userList[0].betCount %></p>
 
-							<% setTimeout(botTurn, 1000) %>
+							<% setTimeout(botTurn, 5000) %>
 							<meta http-equiv="refresh" content="6">
 						</div>
 					<% } else {%>
@@ -60,7 +60,7 @@
 
 			<% if (userList[0].currentTurn === false) { %>
 				<p>Waiting for bot</p>
-				<% setTimeout(botTurn, 1000) %>
+				<% setTimeout(botTurn, 5000) %>
 				<meta http-equiv="refresh" content="6">
 				
 			<%} else { %>
@@ -85,10 +85,10 @@
 							
 							<% } else {%>
 								<button type="submit" name="action" value="Check" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Check</button> <!-- Attendre -->
-								<button type="submit" name="action" value="Fold" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Fold</button> <!-- Passer -->
-								<button type="submit" name="action" value="Call" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Call</button> <!-- Suivre -->
 								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disable>Bet 1 Chip</button> <!-- Miser -->
 								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disable>Bet 2 Chips</button> <!-- Miser -->
+								<button type="submit" name="action" value="Fold" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Fold</button> <!-- Passer -->
+								<button type="submit" name="action" value="Call" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Call</button> <!-- Suivre -->
 								<button type="submit" name="action" value="Raise" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Raise</button> <!-- Relancer -->
 							<% } %>
 						</form>
@@ -98,7 +98,7 @@
 
 			<% for(const [index, user] of userList.entries()) { %>
 				<% if (user.id === "Bot") { %>
-					<% if (gameTurn !== 2 || user.cardHand.length == 2) {%>
+					<% if (gameTurn == 2 || user.cardHand.length == 2) {%>
 						<div style="display: flex; flex-direction: column;">
 							<h4>Bot hand</h4>
 							<article>
@@ -117,7 +117,7 @@
 							<p>Chips : <%= userList[0].chips %></p>
 							<p>Bet : <%= userList[0].betCount %></p>
 
-							<% setTimeout(botTurn, 1000) %>
+							<% setTimeout(botTurn, 5000) %>
 							<meta http-equiv="refresh" content="6">
 						</div>
 					<% } else {%>

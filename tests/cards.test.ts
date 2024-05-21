@@ -1,10 +1,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { giveRandomCard } from '../src/users/controller'; // Modifiez le chemin vers votre module
+import { card } from '../src/recipes/model';
 
-let cardList: string[] = [];
+let cardList: card[] = [];
 
 beforeEach(() => {
-	cardList: [
+	cardList = [
     { id: "A", value: 13, symbol: "♠" },
     { id: "K", value: 12, symbol: "♠" },
     { id: "Q", value: 11, symbol: "♠" },
@@ -46,7 +47,6 @@ describe('giveRandomCard', () => {
 
 	it('should return undefined if the cardList is empty', () => {
 		// Empty the cardList
-		cardList = [];
 		const card = giveRandomCard();
 		expect(card).toBeUndefined();
 	});

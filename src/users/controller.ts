@@ -31,23 +31,16 @@ function resetValue() {
 	let chips1 = userList[0].chips - 1;
 	let chips2 = userList[1].chips - 1;
 
-	if (userList[0].currentTurn == true) {
-		userList[0].currentTurn = false;
-		userList[1].currentTurn = true;
-	} else if (userList[0].currentTurn == false) {
-		userList[0].currentTurn = true;
-		userList[1].currentTurn = false;
-	}
+	userList[0].currentTurn = !userList[0].currentTurn;
 	let currentTurn1 = userList[0].currentTurn;
-	let currentTurn2 = userList[1].currentTurn;
 
 	userList = [];
 	let player : user = {id: "Player", chips: chips1, cardHand : cardHand1, currentTurn: currentTurn1, betCount: 0};
 	userList.push(player);
-	let bot = {id: "Bot", chips: chips2, cardHand : cardHand2, currentTurn: currentTurn2, betCount: 0};
+	let bot = {id: "Bot", chips: chips2, cardHand : cardHand2, currentTurn: false, betCount: 0};
 	userList.push(bot);
 
-	cardList = [];
+	cardList = addCards();
 	switchTurn = 1;
 	gameTurn = 1;
 	pot = 0;
@@ -55,45 +48,25 @@ function resetValue() {
 
 // symbols : ♠ ♥ ♦ ♣
 
-// cards ♠
-let Card : card = {id: "A", value: 13, symbol: "♠"};
-cardList.push(Card);
+function addCards() : card[] {
+	// cards ♠
+	let cardList = [{ id: "A", value: 13, symbol: "♠" },
+	{ id: "K", value: 12, symbol: "♠" },
+	{ id: "Q", value: 11, symbol: "♠" },
+	{ id: "J", value: 10, symbol: "♠" },
+	{ id: "10", value: 9, symbol: "♠" },
+	{ id: "9", value: 8, symbol: "♠" },
+	{ id: "A", value: 13, symbol: "♥" },
+	{ id: "K", value: 12, symbol: "♥" },
+	{ id: "Q", value: 11, symbol: "♥" },
+	{ id: "J", value: 10, symbol: "♥" },
+	{ id: "10", value: 9, symbol: "♥" },
+	{ id: "9", value: 8, symbol: "♥" }];
 
-Card = {id: "K", value: 12, symbol: "♠"};
-cardList.push(Card);
+	return cardList;
+}
 
-Card = {id: "Q", value: 11, symbol: "♠"};
-cardList.push(Card);
-
-Card = {id: "J", value: 10, symbol: "♠"};
-cardList.push(Card);
-
-Card = {id: "10", value: 9, symbol: "♠"};
-cardList.push(Card);
-
-Card = {id: "9", value: 8, symbol: "♠"};
-cardList.push(Card);
-
-
-// cards ♥
-Card = {id: "A", value: 13, symbol: "♥"};
-cardList.push(Card);
-
-Card = {id: "K", value: 12, symbol: "♥"};
-cardList.push(Card);
-
-Card = {id: "Q", value: 11, symbol: "♥"};
-cardList.push(Card);
-
-Card = {id: "J", value: 10, symbol: "♥"};
-cardList.push(Card);
-
-Card = {id: "10", value: 9, symbol: "♥"};
-cardList.push(Card);
-
-Card = {id: "9", value: 8, symbol: "♥"};
-cardList.push(Card);
-
+cardList = addCards();
 
 export function giveRandomCard() {
 	let index = Math.floor(Math.random() * cardList.length);
@@ -132,17 +105,17 @@ let bot = {id: "Bot",
 userList.push(bot);
 
 // console.log(cardList);
-// console.log(userList[0].cardHand[0]);
-// console.log(userList[0].cardHand[1]);
-// console.log(userList[1].cardHand[0]);
-// console.log(userList[1].cardHand[1]);
+console.log(userList[0].cardHand[0]);
+console.log(userList[0].cardHand[1]);
+console.log(userList[1].cardHand[0]);
+console.log(userList[1].cardHand[1]);
 
 
 export function botTurn() {
 	let optionsList = [""];
 
 	if (userList[0].betCount === 0 && userList[1].betCount === 0) {
-		optionsList = ["Check","Bet1","Bet2"];
+		optionsList = ["Call"];
 
 	} else if (switchTurn === 2 && userList[0].betCount > userList[1].betCount && userList[1].betCount === 0) {
 		optionsList = ["Call","Raise","Fold"];
@@ -155,13 +128,13 @@ export function botTurn() {
 	
 	switch (optionsList[index]) {
 		case 'Check':
-			userList[0].currentTurn = true;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			switchTurn++;
 			console.log("Bot Check");
 		break;
 
 		case 'Raise':
-			userList[0].currentTurn = true;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			userList[1].betCount += userList[0].betCount*2;
 			userList[1].chips = userList[1].chips - userList[1].betCount;
 			pot += userList[1].betCount;
@@ -169,7 +142,7 @@ export function botTurn() {
 		break;
 
 		case 'Bet1':
-			userList[0].currentTurn = true;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			userList[1].chips = userList[1].chips - 1;
 			userList[1].betCount += 1;
 			pot += userList[1].betCount;
@@ -177,7 +150,7 @@ export function botTurn() {
 		break;
 
 		case 'Bet2':
-			userList[0].currentTurn = true;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			userList[1].chips = userList[1].chips - 2;
 			userList[1].betCount += 2;
 			pot += userList[1].betCount;
@@ -186,7 +159,7 @@ export function botTurn() {
 
 		case 'Fold':
 			console.log("Bot Fold");
-			userList[0].currentTurn = true;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			console.log("Game finish, Player win by opponent fold");
 			userList[0].chips += pot;
 			resetValue();
@@ -194,11 +167,12 @@ export function botTurn() {
 
 		case 'Call':
 			console.log("Bot Call");
-			userList[0].currentTurn = true;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			userList[1].betCount = userList[0].betCount;
 			userList[1].chips -= userList[1].betCount;
 			pot += userList[1].betCount;
 			switchTurn++;
+			console.log("bot switchTurn : " +switchTurn);
 		break;
 	}
 
@@ -225,9 +199,9 @@ export function botTurn() {
 		let playerhand = categorizeHand(userList[0].cardHand);
 		let bothand = categorizeHand(userList[1].cardHand);
 		compareHand(playerhand, bothand);
-		console.log("playerhand ="+ playerhand);
-		console.log("bothand ="+ bothand);
-		console.log(compareHand(playerhand, bothand));
+		// console.log("playerhand ="+ playerhand);
+		// console.log("bothand ="+ bothand);
+		// console.log(compareHand(playerhand, bothand));
 		resetValue();
 	}
 	// console.log("Player gameTurn : "+gameTurn+"Player switchTurn : "+switchTurn);
@@ -246,19 +220,19 @@ let pot = stackinitial - (userList[0].chips+userList[1].chips);
 export const ActionPlayer : RequestHandler = (req, res) => {
 	switch (req.body.action) {
 		case 'Check':
-			userList[0].currentTurn = false;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			switchTurn++;
 		break;
 
 		case 'Raise':
-			userList[0].currentTurn = false;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			userList[0].betCount += userList[1].betCount*2;
 			userList[0].chips = userList[0].chips - userList[0].betCount;
 			pot += userList[1].betCount;
 		break;
 
 		case 'Bet1':
-			userList[0].currentTurn = false;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			userList[0].chips = userList[0].chips - 1;
 			userList[0].betCount += 1;
 			pot += userList[0].betCount;
@@ -266,7 +240,7 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 		break;
 
 		case 'Bet2':
-			userList[0].currentTurn = false;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			userList[0].chips = userList[0].chips - 2;
 			userList[0].betCount += 2;
 			pot += userList[0].betCount;
@@ -274,18 +248,19 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 		break;
 
 		case 'Fold':
-			userList[0].currentTurn = false;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			console.log("Game finish, Bot win by opponent fold");
 			userList[1].chips += pot;
 			resetValue();
 		break;
 
 		case 'Call':
-			userList[0].currentTurn = false;
+			userList[0].currentTurn = !userList[0].currentTurn;
 			userList[0].betCount = userList[1].betCount;
 			userList[0].chips -= userList[0].betCount;
 			pot += userList[0].betCount;
 			switchTurn++;
+			console.log("player switchTurn : " +switchTurn);
 		break;
 	}
 
