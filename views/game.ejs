@@ -17,7 +17,7 @@
 		<div style="display: flex; justify-content: space-between; text-align: center;">
 			<% for(const [index, user] of userList.entries()) { %>
 				<% if (user.id === "Player") { %>
-					<% if (gameTurn == 2 || user.cardHand.length == 2) {%>
+					<% if (turnForCard == 2 || user.cardHand.length == 2) {%>
 						<div style="display: flex; flex-direction: column;">
 							<h4>Your hand</h4>
 							<article>
@@ -67,26 +67,27 @@
 				<div style="display: flex; justify-content: center; align-items: center; padding-left: 20%; padding-right: 20%;">
 					<div class="actions">
 						<form action="/game" id="button-form" method="post" class="row" style="display: flex; justify-content: center;">
-							<% if (userList[0].betCount === 0 && userList[1].betCount === 0) {%>
+							<% if (turnPlayer === 1 || (userList[0].betCount === 0 && userList[1].betCount === 0)) { %> <!-- Tour 1 ou les mises sont à 0 -->
+									<!-- Si Player est le premier à parler OU Si Bot est le premier à parler et que dit Attendre -->
 								<button type="submit" name="action" value="Check" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Check</button> <!-- Attendre -->
 								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Bet 1 Chip</button> <!-- Miser -->
 								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Bet 2 Chips</button> <!-- Miser -->
 								<button type="submit" name="action" value="Fold" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Fold</button> <!-- Passer -->
 								<button type="submit" name="action" value="Call" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Call</button> <!-- Suivre -->
-								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Raise</button> <!-- Miser -->
+								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Raise</button> <!-- Relancer -->
 							
-							<%} else if (switchTurn === 2 && userList[1].betCount > userList[0].betCount && userList[0].betCount === 0) {%> 
+							<% } else if (turnPlayer === 2 && (userList[1].currentTurn === true && userList[1].betCount !== 0)) { %> <!-- Tour 2 donc Bot a parlé en premier -->
 								<button type="submit" name="action" value="Check" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Check</button> <!-- Attendre -->
 								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Bet 1 Chip</button> <!-- Miser -->
 								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Bet 2 Chips</button> <!-- Miser -->
 								<button type="submit" name="action" value="Fold" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Fold</button> <!-- Passer -->
 								<button type="submit" name="action" value="Call" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Call</button> <!-- Suivre -->
-								<button type="submit" name="action" value="Raise" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Raise</button> <!-- Relancer -->
+								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Raise</button> <!-- Relancer -->
 							
-							<% } else {%>
+							<% } else { %> <!-- Tour 3 -->
 								<button type="submit" name="action" value="Check" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Check</button> <!-- Attendre -->
-								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disable>Bet 1 Chip</button> <!-- Miser -->
-								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disable>Bet 2 Chips</button> <!-- Miser -->
+								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Bet 1 Chip</button> <!-- Miser -->
+								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Bet 2 Chips</button> <!-- Miser -->
 								<button type="submit" name="action" value="Fold" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Fold</button> <!-- Passer -->
 								<button type="submit" name="action" value="Call" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Call</button> <!-- Suivre -->
 								<button type="submit" name="action" value="Raise" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Raise</button> <!-- Relancer -->
@@ -98,7 +99,7 @@
 
 			<% for(const [index, user] of userList.entries()) { %>
 				<% if (user.id === "Bot") { %>
-					<% if (gameTurn == 2 || user.cardHand.length == 2) {%>
+					<% if (turnForCard == 2 || user.cardHand.length == 2) {%>
 						<div style="display: flex; flex-direction: column;">
 							<h4>Bot hand</h4>
 							<article>

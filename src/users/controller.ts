@@ -7,13 +7,13 @@ export const Reception : RequestHandler = (req, res) => {
 };
 
 export const Game : RequestHandler = (req, res) => {
-	res.render('game', {userList, cardList, pot, botTurn, switchTurn, gameTurn});
+	res.render('game', {userList, cardList, pot, botTurn, turnPlayer, turnForCard});
 };
 
 export let userList : user[] = [];
 export let cardList : card[] = [];
-let switchTurn: number=1;
-let gameTurn: number=1;
+let turnPlayer: number=1;
+let turnForCard: number=1;
 
 export function resetValue() {
 	let cardHand1: card[]=[];
@@ -33,17 +33,18 @@ export function resetValue() {
 
 	userList[0].currentTurn = !userList[0].currentTurn;
 	let currentTurn1 = userList[0].currentTurn;
+	let indicateIfBotStartsTheGame = !userList[1].currentTurn;
 
 	userList = [];
 	let player : user = {id: "Player", chips: chips1, cardHand : cardHand1, currentTurn: currentTurn1, betCount: 0};
 	userList.push(player);
-	let bot = {id: "Bot", chips: chips2, cardHand : cardHand2, currentTurn: false, betCount: 0};
+	let bot = {id: "Bot", chips: chips2, cardHand : cardHand2, currentTurn: indicateIfBotStartsTheGame, betCount: 0};
 	userList.push(bot);
 
 	cardList = addCards();
-	switchTurn = 1;
-	gameTurn = 1;
-	pot = 0;
+	turnPlayer = 1;
+	turnForCard = 1;
+	pot = 2;
 }
 
 // symbols : ♠ ♥ ♦ ♣
@@ -114,10 +115,10 @@ userList.push(bot);
 export function botTurn() {
 	let optionsList = [""];
 
-	if (userList[0].betCount === 0 && userList[1].betCount === 0) {
-		optionsList = ["Call"];
-
-	} else if (switchTurn === 2 && userList[0].betCount > userList[1].betCount && userList[1].betCount === 0) {
+	if (turnPlayer === 1 || (userList[0].betCount === 0 && userList[1].betCount === 0)) {
+		optionsList = ["Check","Bet1","Bet2"];
+		
+	} else if (turnPlayer === 2 && userList[1].betCount === 0 && userList[0].betCount !== 0) {
 		optionsList = ["Call","Raise","Fold"];
 		
 	} else {
@@ -129,15 +130,16 @@ export function botTurn() {
 	switch (optionsList[index]) {
 		case 'Check':
 			userList[0].currentTurn = !userList[0].currentTurn;
-			switchTurn++;
+			turnPlayer++;
 			console.log("Bot Check");
 		break;
 
 		case 'Raise':
 			userList[0].currentTurn = !userList[0].currentTurn;
-			userList[1].betCount += userList[0].betCount*2;
-			userList[1].chips = userList[1].chips - userList[1].betCount;
+			userList[1].betCount += userList[0].betCount+1;
+			userList[1].chips -= userList[1].betCount;
 			pot += userList[1].betCount;
+			turnPlayer++;
 			console.log("Bot Raise");
 		break;
 
@@ -146,6 +148,7 @@ export function botTurn() {
 			userList[1].chips = userList[1].chips - 1;
 			userList[1].betCount += 1;
 			pot += userList[1].betCount;
+			turnPlayer++;
 			console.log("Bot Bet1");
 		break;
 
@@ -154,6 +157,7 @@ export function botTurn() {
 			userList[1].chips = userList[1].chips - 2;
 			userList[1].betCount += 2;
 			pot += userList[1].betCount;
+			turnPlayer++;
 			console.log("Bot Bet2");
 		break;
 
@@ -171,12 +175,11 @@ export function botTurn() {
 			userList[1].betCount = userList[0].betCount;
 			userList[1].chips -= userList[1].betCount;
 			pot += userList[1].betCount;
-			switchTurn++;
-			console.log("bot switchTurn : " +switchTurn);
+			turnPlayer++;
 		break;
 	}
 
-	if (switchTurn === 3) {
+	if (turnPlayer === 3) {
 		// give one card to player and bot
 		newRandomCard = giveRandomCard();
 		cardHand1.push(newRandomCard);
@@ -184,15 +187,15 @@ export function botTurn() {
 		newRandomCard = giveRandomCard();
 		cardHand2.push(newRandomCard);
 
-		gameTurn = 2;
-		userList[0].betCount=0;
-		userList[1].betCount=0;
+		turnForCard = 2;
+		// userList[0].betCount=0;
+		// userList[1].betCount=0;
 		
 		// console.log(userList[0].cardHand);
 		// console.log(userList[1].cardHand);
 	}
 
-	if (switchTurn === 4) {
+	if (turnPlayer === 4) {
 		console.log(userList[0].cardHand);
 		console.log(userList[1].cardHand);
 
@@ -204,7 +207,6 @@ export function botTurn() {
 		// console.log(compareHand(playerhand, bothand));
 		resetValue();
 	}
-	// console.log("Player gameTurn : "+gameTurn+"Player switchTurn : "+switchTurn);
 }
 
 
@@ -221,14 +223,15 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 	switch (req.body.action) {
 		case 'Check':
 			userList[0].currentTurn = !userList[0].currentTurn;
-			switchTurn++;
+			turnPlayer++;
 		break;
 
 		case 'Raise':
 			userList[0].currentTurn = !userList[0].currentTurn;
-			userList[0].betCount += userList[1].betCount*2;
-			userList[0].chips = userList[0].chips - userList[0].betCount;
+			userList[0].betCount += userList[1].betCount+1;
+			userList[0].chips -= userList[0].betCount;
 			pot += userList[1].betCount;
+			turnPlayer++;
 		break;
 
 		case 'Bet1':
@@ -236,7 +239,7 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 			userList[0].chips = userList[0].chips - 1;
 			userList[0].betCount += 1;
 			pot += userList[0].betCount;
-			switchTurn++;
+			turnPlayer++;
 		break;
 
 		case 'Bet2':
@@ -244,7 +247,7 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 			userList[0].chips = userList[0].chips - 2;
 			userList[0].betCount += 2;
 			pot += userList[0].betCount;
-			switchTurn++;
+			turnPlayer++;
 		break;
 
 		case 'Fold':
@@ -259,12 +262,12 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 			userList[0].betCount = userList[1].betCount;
 			userList[0].chips -= userList[0].betCount;
 			pot += userList[0].betCount;
-			switchTurn++;
-			console.log("player switchTurn : " +switchTurn);
+			turnPlayer++;
+			console.log("player turnPlayer : " +turnPlayer);
 		break;
 	}
 
-	if (switchTurn === 3) {
+	if (turnPlayer === 3) {
 		// Give one card to player and bot
 		newRandomCard = giveRandomCard();
 		cardHand1.push(newRandomCard);
@@ -272,15 +275,15 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 		newRandomCard = giveRandomCard();
 		cardHand2.push(newRandomCard);
 
-		gameTurn = 2;
-		userList[0].betCount=0;
-		userList[1].betCount=0;
+		turnForCard = 2;
+		// userList[0].betCount=0;
+		// userList[1].betCount=0;
 		
 		// console.log(userList[0].cardHand);
 		// console.log(userList[1].cardHand);
 	}
 
-	if (switchTurn === 4) {
+	if (turnPlayer === 4) {
 		console.log(userList[0].cardHand);
 		console.log(userList[1].cardHand);
 
