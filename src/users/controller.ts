@@ -15,7 +15,7 @@ export let cardList : card[] = [];
 let switchTurn: number=1;
 let gameTurn: number=1;
 
-function resetValue() {
+export function resetValue() {
 	let cardHand1: card[]=[];
 	let newRandomCard = giveRandomCard();
 	cardHand1.push(newRandomCard);
@@ -48,7 +48,7 @@ function resetValue() {
 
 // symbols : ♠ ♥ ♦ ♣
 
-function addCards() : card[] {
+export function addCards() : card[] {
 	// cards ♠
 	let cardList = [{ id: "A", value: 13, symbol: "♠" },
 	{ id: "K", value: 12, symbol: "♠" },
@@ -105,10 +105,10 @@ let bot = {id: "Bot",
 userList.push(bot);
 
 // console.log(cardList);
-console.log(userList[0].cardHand[0]);
-console.log(userList[0].cardHand[1]);
-console.log(userList[1].cardHand[0]);
-console.log(userList[1].cardHand[1]);
+// console.log(userList[0].cardHand[0]);
+// console.log(userList[0].cardHand[1]);
+// console.log(userList[1].cardHand[0]);
+// console.log(userList[1].cardHand[1]);
 
 
 export function botTurn() {
