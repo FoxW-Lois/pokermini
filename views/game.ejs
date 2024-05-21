@@ -17,7 +17,7 @@
 		<div style="display: flex; justify-content: space-between; text-align: center;">
 			<% for(const [index, user] of userList.entries()) { %>
 				<% if (user.id === "Player") { %>
-					<% if (gameTurn !== 2) {%>
+					<% if (gameTurn !== 2 || user.cardHand.length == 2) {%>
 						<div style="display: flex; flex-direction: column;">
 							<h4>Your hand</h4>
 							<article>
@@ -28,6 +28,16 @@
 							</article>
 							<p>Chips : <%= userList[0].chips %></p>
 							<p>Bet : <%= userList[0].betCount %></p>
+						</div>
+					<% } else if (user.cardHand.length == 0) {%>
+						<div style="display: flex; flex-direction: column;">
+							<h4>Your hand</h4>
+							<p>No card</p>
+							<p>Chips : <%= userList[0].chips %></p>
+							<p>Bet : <%= userList[0].betCount %></p>
+
+							<% setTimeout(botTurn, 1000) %>
+							<meta http-equiv="refresh" content="6">
 						</div>
 					<% } else {%>
 						<div style="display: flex; flex-direction: column;">
@@ -88,7 +98,7 @@
 
 			<% for(const [index, user] of userList.entries()) { %>
 				<% if (user.id === "Bot") { %>
-					<% if (gameTurn !== 2) {%>
+					<% if (gameTurn !== 2 || user.cardHand.length == 2) {%>
 						<div style="display: flex; flex-direction: column;">
 							<h4>Bot hand</h4>
 							<article>
@@ -99,6 +109,16 @@
 							</article>
 							<p>Chips : <%= userList[1].chips %></p>
 							<p>Bet : <%= userList[1].betCount %></p>
+						</div>
+					<% } else if (user.cardHand.length == 0) {%>
+						<div style="display: flex; flex-direction: column;">
+							<h4>Your hand</h4>
+							<p>No card</p>
+							<p>Chips : <%= userList[0].chips %></p>
+							<p>Bet : <%= userList[0].betCount %></p>
+
+							<% setTimeout(botTurn, 1000) %>
+							<meta http-equiv="refresh" content="6">
 						</div>
 					<% } else {%>
 						<div style="display: flex; flex-direction: column;">

@@ -28,8 +28,8 @@ function resetValue() {
 	newRandomCard = giveRandomCard();
 	cardHand2.push(newRandomCard);
 
-	let chips1 = userList[0].chips;
-	let chips2 = userList[1].chips;
+	let chips1 = userList[0].chips - 1;
+	let chips2 = userList[1].chips - 1;
 
 	if (userList[0].currentTurn == true) {
 		userList[0].currentTurn = false;
