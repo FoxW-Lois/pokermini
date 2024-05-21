@@ -8,9 +8,9 @@
 
 		<div style="display: flex; justify-content: center; align-items: center;">
 			<h1>PokerMini</h1>
-		</div>	
+		</div>
 
-		<div>
+		<div style="display: flex; justify-content: center; align-items: center;">
 			<p>Pot : <%= pot %></p>
 		</div>
 
@@ -31,8 +31,6 @@
 						</div>
 					<% } else {%>
 						<div style="display: flex; flex-direction: column;">
-							<p>Chips : <%= userList[0].chips %></p>
-							<p>Bet : <%= userList[0].betCount %></p>
 							<h4>Your hand</h4>
 							<article>
 								<span><%=user.cardHand[0].id%> <%=user.cardHand[0].symbol%></span>
@@ -47,7 +45,49 @@
 							<p>Bet : <%= userList[0].betCount %></p>
 						</div>
 					<% } %>
-				<% } else { %>
+				<% } %>
+			<% } %>
+
+			<% if (userList[0].currentTurn === false) { %>
+				<p>Waiting for bot</p>
+				<% setTimeout(botTurn, 1000) %>
+				<meta http-equiv="refresh" content="6">
+				
+			<%} else { %>
+				<div style="display: flex; justify-content: center; align-items: center; padding-left: 20%; padding-right: 20%;">
+					<div class="actions">
+						<form action="/game" id="button-form" method="post" class="row" style="display: flex; justify-content: center;">
+							<% if (userList[0].betCount === 0 && userList[1].betCount === 0) {%>
+								<button type="submit" name="action" value="Check" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Check</button> <!-- Attendre -->
+								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Bet 1 Chip</button> <!-- Miser -->
+								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Bet 2 Chips</button> <!-- Miser -->
+								<button type="submit" name="action" value="Fold" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Fold</button> <!-- Passer -->
+								<button type="submit" name="action" value="Call" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Call</button> <!-- Suivre -->
+								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Raise</button> <!-- Miser -->
+							
+							<%} else if (switchTurn === 2 && userList[1].betCount > userList[0].betCount && userList[0].betCount === 0) {%> 
+								<button type="submit" name="action" value="Check" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Check</button> <!-- Attendre -->
+								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Bet 1 Chip</button> <!-- Miser -->
+								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Bet 2 Chips</button> <!-- Miser -->
+								<button type="submit" name="action" value="Fold" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Fold</button> <!-- Passer -->
+								<button type="submit" name="action" value="Call" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Call</button> <!-- Suivre -->
+								<button type="submit" name="action" value="Raise" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Raise</button> <!-- Relancer -->
+							
+							<% } else {%>
+								<button type="submit" name="action" value="Check" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Check</button> <!-- Attendre -->
+								<button type="submit" name="action" value="Fold" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Fold</button> <!-- Passer -->
+								<button type="submit" name="action" value="Call" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;">Call</button> <!-- Suivre -->
+								<button type="submit" name="action" value="Bet1" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disable>Bet 1 Chip</button> <!-- Miser -->
+								<button type="submit" name="action" value="Bet2" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disable>Bet 2 Chips</button> <!-- Miser -->
+								<button type="submit" name="action" value="Raise" class="col-lg-4" style="flex: 1 1 30%; margin: 5px;" disabled>Raise</button> <!-- Relancer -->
+							<% } %>
+						</form>
+					</div>
+				</div>
+			<% } %>
+
+			<% for(const [index, user] of userList.entries()) { %>
+				<% if (user.id === "Bot") { %>
 					<% if (gameTurn !== 2) {%>
 						<div style="display: flex; flex-direction: column;">
 							<h4>Bot hand</h4>
@@ -79,41 +119,6 @@
 				<% } %>
 			<% } %>
 		</div>
-
-		<% if (userList[0].currentTurn === false) { %>
-			<p>Waiting for bot</p>
-			<% setTimeout(botTurn, 1000) %>
-			<meta http-equiv="refresh" content="6">
-			
-		<%} else { %>
-			<div style="display: flex; justify-content: center; align-items: center;">
-				<div class="actions">
-					<form action="/game" method="post" class="row">
-						<% if (userList[0].betCount === 0 && userList[1].betCount === 0) {%>
-							<button type="submit" name="action" value="Check" class="col-lg-4">Check</button> <!-- Attendre -->
-							<button type="submit" name="action" value="Fold" class="col-lg-4" disabled>Fold</button> <!-- Passer -->
-							<button type="submit" name="action" value="Call" class="col-lg-4" disabled>Call</button> <!-- Suivre -->
-							<button type="submit" name="action" value="Bet" class="col-lg-4">Bet</button> <!-- Miser -->
-							<input type="number" name="betraise_value" id="betraise_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-lg-4">
-						
-						<%} else if (switchTurn === 2 && userList[1].betCount > userList[0].betCount && userList[0].betCount === 0) {%> 
-							<button type="submit" name="action" value="Check" class="col-lg-4" disabled>Check</button> <!-- Attendre -->
-							<button type="submit" name="action" value="Fold" class="col-lg-4">Fold</button> <!-- Passer -->
-							<button type="submit" name="action" value="Call" class="col-lg-4">Call</button> <!-- Suivre -->
-							<button type="submit" name="action" value="Raise" class="col-lg-4">Raise</button> <!-- Relancer -->
-							<input type="number" name="betraise_value" id="betraise_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-lg-4">
-						
-						<% } else {%>
-							<button type="submit" name="action" value="Check" class="col-lg-4" disabled>Check</button> <!-- Attendre -->
-							<button type="submit" name="action" value="Fold" class="col-lg-4">Fold</button> <!-- Passer -->
-							<button type="submit" name="action" value="Call" class="col-lg-4">Call</button> <!-- Suivre -->
-							<button type="submit" name="action" value="Raise" class="col-lg-4" disabled>Raise</button> <!-- Relancer -->
-							<input type="number" name="betraise_value" id="betraise_value" oninput="this.value = this.value.replace(/[^0-9]/g, '');" class="col-lg-4" disabled>
-						<% } %>
-					</form>
-				</div>
-			</div>
-		<% } %>
 
 	</main>
 </body>

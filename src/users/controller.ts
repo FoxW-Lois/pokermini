@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import { card, user } from '../recipes/model';
+import { categorizeHand, compareHand } from "./hand";
 
 export const Reception : RequestHandler = (req, res) => {
 	res.render("index");
@@ -7,100 +8,90 @@ export const Reception : RequestHandler = (req, res) => {
 
 export const Game : RequestHandler = (req, res) => {
 	res.render('game', {userList, cardList, pot, botTurn, switchTurn, gameTurn});
-}
+};
 
-export const userList : user[] = [];
-export const cardList : card[] = [];
+export let userList : user[] = [];
+export let cardList : card[] = [];
 let switchTurn: number=1;
 let gameTurn: number=1;
+
+function resetValue() {
+	let cardHand1: card[]=[];
+	let newRandomCard = giveRandomCard();
+	cardHand1.push(newRandomCard);
+	newRandomCard = giveRandomCard();
+	cardHand1.push(newRandomCard);
+
+	let cardHand2: card[]=[];
+	newRandomCard = giveRandomCard();
+	cardHand2.push(newRandomCard);
+	newRandomCard = giveRandomCard();
+	cardHand2.push(newRandomCard);
+
+	let chips1 = userList[0].chips;
+	let chips2 = userList[1].chips;
+
+	if (userList[0].currentTurn == true) {
+		userList[0].currentTurn = false;
+		userList[1].currentTurn = true;
+	} else if (userList[0].currentTurn == false) {
+		userList[0].currentTurn = true;
+		userList[1].currentTurn = false;
+	}
+	let currentTurn1 = userList[0].currentTurn;
+	let currentTurn2 = userList[1].currentTurn;
+
+	userList = [];
+	let player : user = {id: "Player", chips: chips1, cardHand : cardHand1, currentTurn: currentTurn1, betCount: 0};
+	userList.push(player);
+	let bot = {id: "Bot", chips: chips2, cardHand : cardHand2, currentTurn: currentTurn2, betCount: 0};
+	userList.push(bot);
+
+	cardList = [];
+	switchTurn = 1;
+	gameTurn = 1;
+	pot = 0;
+}
 
 // symbols : ♠ ♥ ♦ ♣
 
 // cards ♠
-let Card : card = {
-	id: "A",
-	value: 13,
-	symbol: "♠"
-};
+let Card : card = {id: "A", value: 13, symbol: "♠"};
 cardList.push(Card);
 
-Card = {
-	id: "K",
-	value: 12,
-	symbol: "♠"
-};
+Card = {id: "K", value: 12, symbol: "♠"};
 cardList.push(Card);
 
-Card = {
-	id: "Q",
-	value: 11,
-	symbol: "♠"
-};
+Card = {id: "Q", value: 11, symbol: "♠"};
 cardList.push(Card);
 
-Card = {
-	id: "J",
-	value: 10,
-	symbol: "♠"
-};
+Card = {id: "J", value: 10, symbol: "♠"};
 cardList.push(Card);
 
-Card = {
-	id: "10",
-	value: 9,
-	symbol: "♠"
-};
+Card = {id: "10", value: 9, symbol: "♠"};
 cardList.push(Card);
 
-Card = {
-	id: "9",
-	value: 8,
-	symbol: "♠"
-};
+Card = {id: "9", value: 8, symbol: "♠"};
 cardList.push(Card);
 
 
 // cards ♥
-Card = {
-	id: "A",
-	value: 13,
-	symbol: "♥"
-};
+Card = {id: "A", value: 13, symbol: "♥"};
 cardList.push(Card);
 
-Card = {
-	id: "K",
-	value: 12,
-	symbol: "♥"
-};
+Card = {id: "K", value: 12, symbol: "♥"};
 cardList.push(Card);
 
-Card = {
-	id: "Q",
-	value: 11,
-	symbol: "♥"
-};
+Card = {id: "Q", value: 11, symbol: "♥"};
 cardList.push(Card);
 
-Card = {
-	id: "J",
-	value: 10,
-	symbol: "♥"
-};
+Card = {id: "J", value: 10, symbol: "♥"};
 cardList.push(Card);
 
-Card = {
-	id: "10",
-	value: 9,
-	symbol: "♥"
-};
+Card = {id: "10", value: 9, symbol: "♥"};
 cardList.push(Card);
 
-Card = {
-	id: "9",
-	value: 8,
-	symbol: "♥"
-};
+Card = {id: "9", value: 8, symbol: "♥"};
 cardList.push(Card);
 
 
@@ -124,8 +115,7 @@ cardHand2.push(newRandomCard);
 newRandomCard = giveRandomCard();
 cardHand2.push(newRandomCard);
 
-let player : user = {
-	id: "Player",
+let player : user = {id: "Player",
 	chips: 100,
 	cardHand : cardHand1,
 	currentTurn: true,
@@ -133,8 +123,7 @@ let player : user = {
 };
 userList.push(player);
 
-let bot = {
-	id: "Bot",
+let bot = {id: "Bot",
 	chips: 100,
 	cardHand : cardHand2,
 	currentTurn: false,
@@ -156,22 +145,19 @@ export function botTurn() {
 		optionsList = ["Check","Bet1","Bet2"];
 
 	} else if (switchTurn === 2 && userList[0].betCount > userList[1].betCount && userList[1].betCount === 0) {
-		optionsList = [ "Call","Raise","Fold"];
+		optionsList = ["Call","Raise","Fold"];
 		
 	} else {
 		optionsList = ["Call","Fold"];
 	}
-	console.log(optionsList);
 
 	let index = Math.floor(Math.random() * optionsList.length);
-	console.log(index);
-	console.log(optionsList[index]);
-
 	
 	switch (optionsList[index]) {
 		case 'Check':
 			userList[0].currentTurn = true;
 			switchTurn++;
+			console.log("Bot Check");
 		break;
 
 		case 'Raise':
@@ -179,6 +165,7 @@ export function botTurn() {
 			userList[1].betCount += userList[0].betCount*2;
 			userList[1].chips = userList[1].chips - userList[1].betCount;
 			pot += userList[1].betCount;
+			console.log("Bot Raise");
 		break;
 
 		case 'Bet1':
@@ -186,6 +173,7 @@ export function botTurn() {
 			userList[1].chips = userList[1].chips - 1;
 			userList[1].betCount += 1;
 			pot += userList[1].betCount;
+			console.log("Bot Bet1");
 		break;
 
 		case 'Bet2':
@@ -193,13 +181,19 @@ export function botTurn() {
 			userList[1].chips = userList[1].chips - 2;
 			userList[1].betCount += 2;
 			pot += userList[1].betCount;
+			console.log("Bot Bet2");
 		break;
 
 		case 'Fold':
+			console.log("Bot Fold");
 			userList[0].currentTurn = true;
+			console.log("Game finish, Player win by opponent fold");
+			userList[0].chips += pot;
+			resetValue();
 		break;
 
 		case 'Call':
+			console.log("Bot Call");
 			userList[0].currentTurn = true;
 			userList[1].betCount = userList[0].betCount;
 			userList[1].chips -= userList[1].betCount;
@@ -223,6 +217,20 @@ export function botTurn() {
 		// console.log(userList[0].cardHand);
 		// console.log(userList[1].cardHand);
 	}
+
+	if (switchTurn === 4) {
+		console.log(userList[0].cardHand);
+		console.log(userList[1].cardHand);
+
+		let playerhand = categorizeHand(userList[0].cardHand);
+		let bothand = categorizeHand(userList[1].cardHand);
+		compareHand(playerhand, bothand);
+		console.log("playerhand ="+ playerhand);
+		console.log("bothand ="+ bothand);
+		console.log(compareHand(playerhand, bothand));
+		resetValue();
+	}
+	// console.log("Player gameTurn : "+gameTurn+"Player switchTurn : "+switchTurn);
 }
 
 
@@ -267,6 +275,9 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 
 		case 'Fold':
 			userList[0].currentTurn = false;
+			console.log("Game finish, Bot win by opponent fold");
+			userList[1].chips += pot;
+			resetValue();
 		break;
 
 		case 'Call':
@@ -294,7 +305,18 @@ export const ActionPlayer : RequestHandler = (req, res) => {
 		// console.log(userList[1].cardHand);
 	}
 
-	console.log(req.body.action);
-	console.log(userList[0].currentTurn);
-	res.redirect("/game"); // /index/game
+	if (switchTurn === 4) {
+		console.log(userList[0].cardHand);
+		console.log(userList[1].cardHand);
+
+		let playerhand = categorizeHand(userList[0].cardHand);
+		let bothand = categorizeHand(userList[1].cardHand);
+		compareHand(playerhand, bothand);
+		// console.log("playerhand ="+ playerhand);
+		// console.log("bothand ="+ bothand);
+		// console.log(compareHand(playerhand, bothand));
+		resetValue();
+	}
+
+	res.redirect("/game");
 }
